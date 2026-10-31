@@ -1,992 +1,580 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PressingManager — Logiciel de gestion pour pressing en Côte d'Ivoire</title>
-  <meta name="description" content="PressingManager est le logiciel tout-en-un pour moderniser votre pressing. Commandes, caisse, clients, WhatsApp automatique. Déjà 24 pressings nous font confiance.">
-  <meta name="theme-color" content="#6c47ff">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <style>
-    :root {
-      --purple: #6c47ff;
-      --purple-dark: #5535e0;
-      --purple-light: #f0ecff;
-      --purple-mid: #ede9fe;
-      --text: #0f0f1a;
-      --muted: #6b7280;
-      --light: #f8f7ff;
-      --border: #e8e4f8;
-      --white: #ffffff;
-      --green: #16a34a;
-      --green-light: #dcfce7;
-      --orange: #f97316;
-      --red: #dc2626;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 20px rgba(108,71,255,0.08);
-      --shadow-lg: 0 16px 48px rgba(108,71,255,0.15);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; line-height: 1.5; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PressingManager — Pilotez votre pressing comme un pro</title>
+<meta name="description" content="PressingManager est le logiciel de gestion pour pressings en Côte d'Ivoire : commandes, caisse, clients, WhatsApp automatique, dans un seul espace de travail.">
+<meta property="og:title" content="PressingManager — Le pilotage clair de votre pressing">
+<meta property="og:description" content="Découvrez les parcours atelier, caisse et clients de PressingManager. Explorez la base test ou demandez une présentation.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#6C47FF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
 
-    /* ANIMATIONS */
-    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
-    .reveal-left.visible { opacity: 1; transform: translateX(0); }
-    .reveal-right { opacity: 0; transform: translateX(40px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
-    .reveal-right.visible { opacity: 1; transform: translateX(0); }
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-    /* NAV */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 40px; transition: all 0.3s; }
-    nav.scrolled { box-shadow: var(--shadow-md); }
-    .nav-inner { max-width: 1160px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 80px; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; color: var(--text); text-decoration: none; letter-spacing: -0.5px; }
-    .nav-logo img { height: 44px; width: auto; }
-    .nav-links { display: flex; align-items: center; gap: 32px; }
-    .nav-links a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--purple); }
-    .nav-cta { background: var(--purple) !important; color: #fff !important; padding: 10px 22px; border-radius: 10px; font-weight: 700 !important; box-shadow: 0 4px 14px rgba(108,71,255,0.3); }
-    .nav-cta:hover { background: var(--purple-dark) !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,71,255,0.4); }
+  --color-background: #FAFAF8;
+  --color-foreground: #111827;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #111827;
+  --color-border: #E5E7EB;
+  --color-muted: #F3F4F6;
+  --color-muted-foreground: #6B7280;
+  --color-accent: #F3E8FF;
+  --color-accent-foreground: #5A3CE6;
+  --color-primary: #6C47FF;
+  --color-primary-hover: #5A3CE6;
+  --color-primary-foreground: #FFFFFF;
+  --color-ring: #6C47FF;
+}
 
-    /* HERO */
-    .hero { padding: 140px 40px 80px; background: radial-gradient(ellipse at top right, rgba(108,71,255,0.06) 0%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(108,71,255,0.04) 0%, transparent 60%), linear-gradient(180deg, var(--light) 0%, var(--white) 100%); overflow: hidden; position: relative; }
-    .hero-inner { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--purple-mid); color: var(--purple); padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 24px; border: 1px solid #d8d0ff; }
-    .hero-badge-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .hero h1 { font-size: clamp(34px, 4vw, 54px); font-weight: 900; line-height: 1.08; letter-spacing: -2px; color: var(--text); margin-bottom: 20px; }
-    .hero h1 .accent { color: var(--purple); position: relative; }
-    .hero h1 .accent::after { content: ''; position: absolute; bottom: 4px; left: 0; right: 0; height: 12px; background: rgba(108,71,255,0.15); border-radius: 4px; z-index: -1; }
-    .hero p { font-size: 17px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 460px; }
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 32px; }
-    .btn-purple { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 20px rgba(108,71,255,0.3); }
-    .btn-purple:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(108,71,255,0.4); }
-    .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text); padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1.5px solid var(--border); transition: all 0.2s; }
-    .btn-outline:hover { border-color: var(--purple); color: var(--purple); transform: translateY(-2px); }
+@layer base {
+  * { border-color: var(--color-border); }
+  body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; }
+}
+</style>
+<style>
+  html { scroll-behavior: smooth; }
+  a { text-decoration: none; }
 
-    .hero-trust { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
-    .hero-avatars { display: flex; }
-    .hero-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 12px; margin-left: -8px; }
-    .hero-avatar:first-child { margin-left: 0; }
+  /* ACCESSIBILITY */
+  :focus-visible { outline: 2px solid #6C47FF; outline-offset: 3px; border-radius: 6px; }
+  .hero-dark :focus-visible { outline-color: #fff; }
+  .skip-link { position: absolute; top: -48px; left: 16px; z-index: 300; background: #6C47FF; color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; transition: top 0.2s; }
+  .skip-link:focus { top: 16px; }
 
-    /* HERO VISUAL */
-    .hero-visual { position: relative; display: flex; justify-content: center; align-items: flex-end; }
-    .hero-mockup { background: var(--white); border-radius: 24px; border: 1.5px solid var(--border); box-shadow: 0 32px 80px rgba(108,71,255,0.15), 0 8px 24px rgba(0,0,0,0.06); overflow: hidden; width: 100%; max-width: 480px; }
-    .mockup-top { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); padding: 14px 18px; display: flex; align-items: center; gap: 10px; }
-    .mockup-dots { display: flex; gap: 6px; }
-    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .mockup-top p { color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; margin-left: 8px; }
-    .mockup-body { padding: 20px; }
-    .mock-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .mock-stat { background: var(--light); border-radius: 12px; padding: 14px; border: 1px solid var(--border); }
-    .mock-num { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
-    .mock-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .mock-orders { background: var(--light); border-radius: 12px; padding: 14px; border: 1px solid var(--border); }
-    .mock-order-title { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .mock-order { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .mock-order:last-child { border-bottom: none; padding-bottom: 0; }
-    .mock-order-name { font-size: 12px; font-weight: 600; color: var(--text); }
-    .mock-order-sub { font-size: 10px; color: #9ca3af; margin-top: 1px; }
-    .mock-order-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
-    .status-green { background: #dcfce7; color: #16a34a; }
-    .status-blue { background: #dbeafe; color: #2563eb; }
-    .status-orange { background: #fff7ed; color: #ea580c; }
+  /* REVEAL ON SCROLL */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s cubic-bezier(.16,1,.3,1), transform 0.6s cubic-bezier(.16,1,.3,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: .08s; }
+  .reveal.delay-2 { transition-delay: .16s; }
+  .reveal.delay-3 { transition-delay: .24s; }
 
-    .hero-badge-float { position: absolute; background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text); z-index: 2; }
-    .badge-left { left: -30px; top: 100px; animation: floatY 3s ease-in-out infinite; }
-    .badge-right { right: -30px; top: 240px; animation: floatY 3s ease-in-out infinite 1.5s; }
-    @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .badge-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  /* HERO WINDOW CAROUSEL */
+  .hero-window { animation: floatMockup 6s ease-in-out infinite; }
+  @keyframes floatMockup { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .carousel-slide { display: none; }
+  .carousel-slide.is-active { display: block; }
+  .carousel-dot[aria-pressed="true"] { background: #6C47FF; width: 20px; border-radius: 4px; }
 
-    /* STATS BAR */
-    .stats-bar { padding: 60px 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--white); }
-    .stats-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
-    .stat-num { font-size: 40px; font-weight: 900; color: var(--purple); letter-spacing: -2px; }
-    .stat-lbl { font-size: 14px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+  /* GALLERY TABS */
+  .gallery-panel { display: none; }
+  .gallery-panel.is-active { display: block; }
+  .gallery-tab[aria-selected="true"] { background: #6C47FF; color: #fff; }
 
-    section { padding: 100px 40px; }
-    .section-inner { max-width: 1160px; margin: 0 auto; }
-    .section-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--purple); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
-    .section-label::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--purple); }
-    .section-title { font-size: clamp(28px, 3vw, 42px); font-weight: 800; color: var(--text); letter-spacing: -1.5px; margin-bottom: 16px; line-height: 1.1; }
-    .section-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 560px; }
-    .section-head-center { text-align: center; }
-    .section-head-center .section-label { justify-content: center; }
-    .section-head-center .section-label::before { display: none; }
-    .section-head-center .section-sub { margin: 0 auto; }
+  /* STATUS BADGES — darkened for WCAG AA 4.5:1 on their tint backgrounds */
+  .status-green { background: #dcfce7; color: #166534; }
+  .status-blue { background: #dbeafe; color: #1e40af; }
+  .status-orange { background: #fff7ed; color: #9a3412; }
 
-    /* BEFORE / AFTER */
-    .compare-section { background: var(--light); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 56px; }
-    .compare-card { border-radius: 20px; padding: 32px; border: 2px solid; }
-    .compare-old { background: #fef2f2; border-color: #fecaca; }
-    .compare-new { background: #f0fdf4; border-color: #bbf7d0; }
-    .compare-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px dashed; }
-    .compare-old .compare-header { border-color: #fecaca; }
-    .compare-new .compare-header { border-color: #bbf7d0; }
-    .compare-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-    .compare-old .compare-icon { background: #fee2e2; color: var(--red); }
-    .compare-new .compare-icon { background: #dcfce7; color: var(--green); }
-    .compare-title { font-size: 18px; font-weight: 800; }
-    .compare-old .compare-title { color: var(--red); }
-    .compare-new .compare-title { color: var(--green); }
-    .compare-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-    .compare-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.5; }
-    .compare-old .compare-list li { color: #991b1b; }
-    .compare-new .compare-list li { color: #166534; }
-    .compare-list i { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  /* TOUCH FEEDBACK */
+  .btn-primary, .btn-outline, .btn-ghost-light, .wa-float, summary, .carousel-arrow, .carousel-dot, .carousel-toggle, .gallery-tab { touch-action: manipulation; }
 
-    /* SCREENSHOTS */
-    .screenshots-section { padding: 100px 40px; background: var(--white); }
-    .screenshots-carousel { margin-top: 56px; position: relative; }
-    .screenshots-track { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 20px; scrollbar-width: thin; }
-    .screenshots-track::-webkit-scrollbar { height: 8px; }
-    .screenshots-track::-webkit-scrollbar-track { background: var(--light); border-radius: 99px; }
-    .screenshots-track::-webkit-scrollbar-thumb { background: var(--purple-light); border-radius: 99px; }
-    .screenshot-card { flex: 0 0 420px; scroll-snap-align: start; border-radius: 20px; overflow: hidden; border: 1.5px solid var(--border); box-shadow: var(--shadow-md); background: #fff; transition: all 0.3s; }
-    .screenshot-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--purple); }
-    .screenshot-mockup { background: linear-gradient(180deg, var(--light), #fff); padding: 24px; min-height: 280px; }
-    .screenshot-label { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .screenshot-label h4 { font-size: 15px; font-weight: 800; color: var(--text); }
-    .screenshot-label p { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .screenshot-num { background: var(--purple-light); color: var(--purple); font-weight: 800; font-size: 12px; padding: 4px 10px; border-radius: 99px; }
+  /* MODAL CLOSE BUTTON (44x44 tap target) */
+  .modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: #6B7280; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: background 0.2s, color 0.2s; }
+  .modal-close:hover, .modal-close:focus-visible { background: #F3E8FF; color: #6C47FF; }
 
-    /* Mockup styles dans les screenshots */
-    .mk-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .mk-logo { width: 32px; height: 32px; border-radius: 8px; background: var(--purple); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; }
-    .mk-title { font-size: 14px; font-weight: 800; }
-    .mk-sub { font-size: 10px; color: var(--muted); }
-    .mk-kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .mk-kpi { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
-    .mk-kpi-purple { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: #fff; border-color: transparent; }
-    .mk-kpi-purple .mk-kpi-num, .mk-kpi-purple .mk-kpi-lbl { color: #fff; }
-    .mk-kpi-num { font-size: 16px; font-weight: 800; }
-    .mk-kpi-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; margin-top: 2px; }
-    .mk-list { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
-    .mk-list-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10px; }
-    .mk-list-item:last-child { border-bottom: none; }
-    .mk-list-name { font-weight: 700; flex: 1; }
-    .mk-badge { font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
-    .mk-chart { height: 80px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; align-items: flex-end; gap: 4px; }
-    .mk-chart-bar { flex: 1; background: linear-gradient(180deg, var(--purple), var(--purple-light)); border-radius: 3px 3px 0 0; }
+  /* PASSWORD VISIBILITY TOGGLE */
+  .pw-field-wrap { position: relative; }
+  .pw-toggle-btn { position: absolute; right: 2px; top: 2px; bottom: 2px; width: 40px; background: none; border: none; cursor: pointer; color: #6B7280; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background 0.2s, color 0.2s; touch-action: manipulation; }
+  .pw-toggle-btn:hover, .pw-toggle-btn:focus-visible { background: #F3E8FF; color: #6C47FF; }
 
-    /* FEATURES */
-    .features-bg { background: var(--light); }
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
-    .feat-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px; padding: 28px; transition: all 0.3s; }
-    .feat-card:hover { border-color: var(--purple); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
-    .feat-icon { width: 52px; height: 52px; background: var(--purple-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; color: var(--purple); font-size: 24px; }
-    .feat-card h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-    .feat-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+  /* FAQ MARKER */
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  summary .faq-plus { transition: transform 0.3s; }
+  details[open] summary .faq-plus { transform: rotate(45deg); }
 
-    /* TESTIMONIALS */
-    .testi-section { padding: 100px 40px; background: var(--white); }
-    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
-    .testi-card { background: var(--light); border-radius: 20px; padding: 28px; border: 1.5px solid var(--border); transition: all 0.3s; position: relative; }
-    .testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--purple); }
-    .testi-quote { font-size: 48px; color: var(--purple); line-height: 0.5; font-family: Georgia, serif; margin-bottom: 16px; }
-    .testi-text { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 24px; font-style: italic; }
-    .testi-author { display: flex; align-items: center; gap: 12px; padding-top: 20px; border-top: 1px solid var(--border); }
-    .testi-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 16px; flex-shrink: 0; }
-    .testi-name { font-weight: 800; font-size: 14px; color: var(--text); }
-    .testi-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .testi-stars { display: flex; gap: 2px; margin-bottom: 12px; color: #fbbf24; font-size: 14px; }
+  /* MOBILE STICKY CTA */
+  .mobile-cta-bar { padding-bottom: env(safe-area-inset-bottom, 0); }
 
-    /* PRICING */
-    .pricing-section { padding: 100px 40px; background: var(--light); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .pricing-inner { max-width: 560px; margin: 0 auto; text-align: center; }
-    .pricing-card { background: var(--white); border: 2px solid var(--purple); border-radius: 24px; padding: 48px; margin-top: 48px; box-shadow: var(--shadow-lg); position: relative; }
-    .pricing-card::before { content: 'POPULAIRE'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--purple); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 14px; border-radius: 99px; letter-spacing: 1px; }
-    .pricing-price { font-size: 52px; font-weight: 900; color: var(--text); letter-spacing: -2px; }
-    .pricing-period { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-    .pricing-divider { height: 1px; background: var(--border); margin: 24px 0; }
-    .price-feats { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; text-align: left; }
-    .price-feats li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text); }
-    .check { width: 22px; height: 22px; background: var(--purple-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--purple); font-size: 13px; flex-shrink: 0; }
-    .btn-full { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--purple); color: #fff; padding: 15px; border-radius: 14px; font-weight: 700; font-size: 16px; text-decoration: none; transition: all 0.2s; }
-    .btn-full:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(108,71,255,0.3); }
-
-    .pay-methods { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
-    .pay-method { display: flex; align-items: center; gap: 8px; background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
-    .pay-method img { height: 24px; width: auto; object-fit: contain; }
-    .pay-method span { font-size: 12px; font-weight: 600; color: var(--muted); }
-
-    /* HOW */
-    .how-section { padding: 100px 40px; }
-    .how-inner { max-width: 720px; margin: 0 auto; }
-    .steps { margin-top: 56px; position: relative; }
-    .steps::before { content: ''; position: absolute; left: 24px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--purple), transparent); }
-    .step { display: flex; gap: 28px; margin-bottom: 48px; position: relative; }
-    .step:last-child { margin-bottom: 0; }
-    .step-num { width: 48px; height: 48px; background: var(--purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; color: #fff; flex-shrink: 0; z-index: 1; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(108,71,255,0.3); }
-    .step-content { padding-top: 10px; }
-    .step-content h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    .step-content p { font-size: 15px; color: var(--muted); line-height: 1.65; }
-
-    /* FAQ */
-    .faq-section { padding: 100px 40px; background: var(--light); border-top: 1px solid var(--border); }
-    .faq-inner { max-width: 780px; margin: 0 auto; }
-    .faq-list { margin-top: 56px; display: flex; flex-direction: column; gap: 12px; }
-    .faq-item { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
-    .faq-item:hover { border-color: var(--purple); }
-    .faq-item.open { border-color: var(--purple); box-shadow: var(--shadow-md); }
-    .faq-q { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; cursor: pointer; user-select: none; font-weight: 700; font-size: 15px; color: var(--text); }
-    .faq-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--purple-light); color: var(--purple); display: flex; align-items: center; justify-content: center; transition: all 0.3s; flex-shrink: 0; font-size: 14px; }
-    .faq-item.open .faq-icon { background: var(--purple); color: #fff; transform: rotate(45deg); }
-    .faq-a { padding: 0 24px; max-height: 0; overflow: hidden; transition: all 0.3s; }
-    .faq-item.open .faq-a { padding: 0 24px 20px; max-height: 300px; }
-    .faq-a p { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-    /* CTA FINAL */
-    .cta-section { padding: 100px 40px; background: linear-gradient(135deg, var(--purple), var(--purple-dark)); text-align: center; position: relative; overflow: hidden; }
-    .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%); }
-    .cta-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
-    .cta-section h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; color: #fff; letter-spacing: -1.5px; margin-bottom: 16px; }
-    .cta-section p { font-size: 17px; color: rgba(255,255,255,0.75); margin-bottom: 40px; line-height: 1.6; }
-    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .btn-white { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--purple); padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; transition: all 0.2s; }
-    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-    .btn-whatsapp { display: inline-flex; align-items: center; gap: 10px; background: #25d366; color: #fff; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
-    .btn-whatsapp:hover { background: #1ebe59; transform: translateY(-2px); }
-
-    /* FOOTER */
-    footer { background: #0f0f1a; color: rgba(255,255,255,0.5); padding: 60px 40px 32px; }
-    .footer-inner { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
-    .footer-brand { display: flex; flex-direction: column; gap: 12px; }
-    .footer-brand h4 { color: #fff; font-size: 16px; font-weight: 800; }
-    .footer-brand p { font-size: 13px; line-height: 1.7; max-width: 280px; }
-    .footer-col h5 { color: #fff; font-size: 13px; font-weight: 800; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 13px; transition: color 0.2s; }
-    .footer-col a:hover { color: var(--purple-light); }
-    .footer-bottom { max-width: 1160px; margin: 0 auto; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 12px; }
-    .footer-social { display: flex; gap: 12px; }
-    .footer-social a { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); transition: all 0.2s; }
-    .footer-social a:hover { background: var(--purple); color: #fff; }
-
-    /* WHATSAPP FLOAT */
-    .wa-float { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 24px rgba(37,211,102,0.4); z-index: 90; text-decoration: none; transition: all 0.3s; }
-    .wa-float:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(37,211,102,0.5); }
-    .wa-float::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: #25d366; opacity: 0.3; animation: pulseRing 2s infinite; z-index: -1; }
-    @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(1.4); opacity: 0; } }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      nav { padding: 0 20px; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .hero { padding: 120px 20px 60px; }
-      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-      .hero-visual { display: none; }
-      .hero p { font-size: 16px; }
-      section, .pricing-section, .how-section, .faq-section, .testi-section, .screenshots-section { padding: 60px 20px; }
-      .stats-bar { padding: 40px 20px; }
-      .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-      .stat-num { font-size: 32px; }
-      .features-grid, .testi-grid, .compare-grid { grid-template-columns: 1fr; }
-      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-      .footer-bottom { flex-direction: column; text-align: center; }
-      .screenshot-card { flex: 0 0 300px; }
-      .pricing-card { padding: 32px 24px; }
-      .pricing-price { font-size: 40px; }
-    }
-    @media (max-width: 640px) {
-      .stats-inner { grid-template-columns: 1fr 1fr; }
-      .stat-num { font-size: 28px; }
-    }
-  </style>
+  /* REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+    .hero-window { animation: none !important; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
 </head>
-<body>
+<body class="bg-background font-sans text-foreground">
 
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <img src="logo.jpg" alt="PressingManager">
+<a href="#hero" class="skip-link">Aller au contenu</a>
+
+<!-- NAVBAR -->
+<header class="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+    <a href="#hero" class="flex items-center gap-2 text-[17px] font-extrabold tracking-tight text-foreground">
+      <span class="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[11px] font-bold text-white">PM</span>
+      PressingManager
     </a>
-    <div class="nav-links">
-      <a href="#fonctionnalites">Fonctionnalités</a>
-      <a href="#tarif">Tarif</a>
-      <a href="#comment">Comment ça marche</a>
-      <a href="#faq">FAQ</a>
-      <a href="a-propos.html">A propos</a>
-      <a href="https://wa.me/2250779613865" class="nav-cta">Demander une démo</a>
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Navigation principale">
+      <a href="#fonctionnalites" class="text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground">Fonctionnalités</a>
+      <a href="#apercu" class="text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground">Aperçu</a>
+      <a href="#tarifs" class="text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground">Tarifs</a>
+      <a href="#faq" class="text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="https://app.pressing-manager.com" class="hidden rounded-md px-3 py-2 text-[14px] font-medium text-muted-foreground hover:text-foreground sm:inline-block">Se connecter</a>
+      <button onclick="openSignupModal()" class="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-md bg-primary px-4 py-2.5 text-[14px] font-semibold text-primary-foreground transition hover:bg-primary-hover">Essayer gratuitement</button>
+      <button id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Ouvrir le menu" class="-mr-1 flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground hover:bg-muted md:hidden">
+        <i aria-hidden="true" class="ti ti-menu-2 text-xl"></i>
+      </button>
     </div>
   </div>
-</nav>
+  <nav id="mobile-nav" class="hidden space-y-1 border-t border-border px-6 py-3 md:hidden" aria-label="Navigation mobile">
+    <a href="#fonctionnalites" class="block rounded-md px-2 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted">Fonctionnalités</a>
+    <a href="#apercu" class="block rounded-md px-2 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted">Aperçu</a>
+    <a href="#tarifs" class="block rounded-md px-2 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted">Tarifs</a>
+    <a href="#faq" class="block rounded-md px-2 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted">FAQ</a>
+    <a href="https://app.pressing-manager.com" class="block rounded-md px-2 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted">Se connecter</a>
+  </nav>
+</header>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-content">
-      <div class="hero-badge reveal">
-        <span class="hero-badge-pulse"></span>
-        Déjà 24 pressings nous font confiance
+<header class="hero-dark relative overflow-hidden bg-gradient-to-br from-[#1E1B4B] to-[#2E1065]" id="hero">
+  <div class="pointer-events-none absolute inset-0" style="background-image:radial-gradient(ellipse 900px 500px at 85% 0%, rgba(108,71,255,0.28) 0%, transparent 60%), radial-gradient(ellipse 700px 500px at 10% 100%, rgba(108,71,255,0.14) 0%, transparent 60%)"></div>
+  <div class="relative mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:items-center lg:gap-16">
+    <!-- COPY -->
+    <div class="text-center lg:text-left">
+      <span class="reveal inline-block font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-white/60">Le logiciel de gestion pensé pour les pressings</span>
+      <h1 class="reveal mt-6 text-4xl font-extrabold leading-[1.08] text-white sm:text-5xl">PILOTEZ VOTRE PRESSING.<br><em class="font-normal italic text-white/80">Maîtrisez chaque commande.</em></h1>
+      <p class="reveal delay-1 mx-auto mt-6 max-w-lg text-lg leading-relaxed text-white/70 lg:mx-0">De la réception du linge au règlement de la facture, rassemblez l'atelier, les clients et les chiffres dans un seul espace de travail.</p>
+      <div class="reveal delay-2 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
+        <button onclick="openSignupModal()" class="btn-primary inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30"><i aria-hidden="true" class="ti ti-player-play"></i> Explorer la base test</button>
+        <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20une%20pr%C3%A9sentation%20de%20PressingManager" class="btn-ghost-light inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/30 px-7 py-3 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10"><i aria-hidden="true" class="ti ti-calendar"></i> Demander une présentation</a>
       </div>
-      <h1 class="reveal delay-1">Gérez votre pressing<br><span class="accent">comme un pro</span></h1>
-      <p class="reveal delay-2">Le logiciel tout-en-un pour moderniser votre pressing. Commandes, caisse, clients, WhatsApp automatique — tout en un seul endroit. Sans installation.</p>
-      <div class="hero-btns reveal delay-3">
-        <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20de%20PressingManager" class="btn-purple">
-          <i class="ti ti-brand-whatsapp"></i> Demander une démo gratuite
-        </a>
-        <a href="#tarif" class="btn-outline">
-          Voir le tarif
-        </a>
-      </div>
-      <div class="hero-trust reveal delay-4">
-        <div class="hero-avatars">
-          <div class="hero-avatar" style="background:#6c47ff">KA</div>
-          <div class="hero-avatar" style="background:#16a34a">BS</div>
-          <div class="hero-avatar" style="background:#f97316">YM</div>
-          <div class="hero-avatar" style="background:#2563eb">+21</div>
+      <a href="https://app.pressing-manager.com" class="reveal delay-2 mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 hover:text-white">Déjà équipé ? Se connecter à votre pressing <i aria-hidden="true" class="ti ti-arrow-up-right"></i></a>
+      <p class="reveal delay-3 mt-4 flex items-center justify-center gap-2 text-xs text-white/50 lg:justify-start"><i aria-hidden="true" class="ti ti-shield-check"></i> Essai 24h gratuit · sans engagement</p>
+    </div>
+
+    <!-- VISUAL: HERO CAROUSEL -->
+    <div class="reveal delay-3">
+      <div class="hero-window overflow-hidden rounded-2xl border-8 border-[#1E1B4B] bg-white shadow-2xl" data-carousel role="region" aria-label="Aperçu dynamique des écrans PressingManager">
+        <div class="flex items-center gap-1.5 bg-[#1E1B4B] px-4 py-3">
+          <span class="h-2.5 w-2.5 rounded-full bg-white/25"></span><span class="h-2.5 w-2.5 rounded-full bg-white/25"></span><span class="h-2.5 w-2.5 rounded-full bg-white/25"></span>
+          <b class="ml-2 font-mono text-[11px] font-normal text-white/60">Aperçu de PressingManager · base de démonstration</b>
         </div>
-        <div>
-          <div style="font-weight:700;color:var(--text)">24 pressings équipés</div>
-          <div style="font-size:12px">à Abidjan, Bouaké et Yamoussoukro</div>
+        <div class="p-5" data-carousel-slides>
+          <!-- Slide 1: Réception -->
+          <div class="carousel-slide is-active" data-slide="reception">
+            <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Réception — nouveau ticket</p>
+            <div class="space-y-2.5">
+              <div class="rounded-lg border border-border bg-background px-3 py-2.5 text-[13px] text-muted-foreground">Nom du client</div>
+              <div class="rounded-lg border border-border bg-background px-3 py-2.5 text-[13px] text-muted-foreground">3 articles — Chemises, pantalons</div>
+              <div class="flex items-center justify-between rounded-lg bg-accent px-3 py-2.5 text-[13px] font-semibold text-primary"><span>Ticket QR</span><i aria-hidden="true" class="ti ti-qrcode text-lg"></i></div>
+            </div>
+          </div>
+          <!-- Slide 2: Atelier -->
+          <div class="carousel-slide" data-slide="atelier">
+            <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Atelier — commandes en cours</p>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">Konan Adjoua</span><span class="status-green rounded-md px-2.5 py-1 text-[11px] font-bold">Prêt</span></div>
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">Bamba Souleymane</span><span class="status-blue rounded-md px-2.5 py-1 text-[11px] font-bold">Lavage</span></div>
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">Yao Marie-Claire</span><span class="status-orange rounded-md px-2.5 py-1 text-[11px] font-bold">Repassage</span></div>
+            </div>
+          </div>
+          <!-- Slide 3: Caisse -->
+          <div class="carousel-slide" data-slide="caisse">
+            <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Caisse — encaissements du jour</p>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="rounded-lg border border-border bg-background p-3"><p class="text-[10px] text-muted-foreground">Wave</p><p class="mt-1 text-sm font-bold">Tracé</p></div>
+              <div class="rounded-lg border border-border bg-background p-3"><p class="text-[10px] text-muted-foreground">Orange</p><p class="mt-1 text-sm font-bold">Tracé</p></div>
+              <div class="rounded-lg border border-border bg-background p-3"><p class="text-[10px] text-muted-foreground">Espèces</p><p class="mt-1 text-sm font-bold">Tracé</p></div>
+            </div>
+            <div class="mt-2.5 flex items-center justify-between rounded-lg bg-accent px-3 py-2.5 text-[13px] font-semibold text-primary"><span>Clôture de caisse</span><i aria-hidden="true" class="ti ti-cash text-lg"></i></div>
+          </div>
+          <!-- Slide 4: Clients -->
+          <div class="carousel-slide" data-slide="clients">
+            <p class="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Clients — fidélité</p>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">Coulibaly Fatoumata</span><span class="rounded-md bg-accent px-2.5 py-1 text-[11px] font-bold text-primary">Fidèle</span></div>
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">Traoré Ibrahim</span><span class="rounded-md bg-muted px-2.5 py-1 text-[11px] font-bold text-muted-foreground">Nouveau</span></div>
+              <div class="flex items-center justify-between rounded-lg border border-border px-3 py-2"><span class="text-[13px] font-medium">N'Guessan Akissi</span><span class="rounded-md bg-accent px-2.5 py-1 text-[11px] font-bold text-primary">Fidèle</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between border-t border-border px-4 py-3">
+          <span class="font-mono text-[11px] text-muted-foreground" data-carousel-caption>Réception véhicule</span>
+          <div class="flex items-center gap-1.5" role="group" aria-label="Commandes de l'aperçu">
+            <button type="button" class="carousel-arrow flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" data-carousel-prev aria-label="Capture précédente"><i aria-hidden="true" class="ti ti-chevron-left"></i></button>
+            <div class="flex items-center gap-1.5" role="group" aria-label="Choisir une capture">
+              <button type="button" class="carousel-dot h-1.5 w-4 rounded-full bg-border transition-all" data-carousel-indicator="reception" aria-label="Afficher : Réception" aria-pressed="true"></button>
+              <button type="button" class="carousel-dot h-1.5 w-4 rounded-full bg-border transition-all" data-carousel-indicator="atelier" aria-label="Afficher : Atelier" aria-pressed="false"></button>
+              <button type="button" class="carousel-dot h-1.5 w-4 rounded-full bg-border transition-all" data-carousel-indicator="caisse" aria-label="Afficher : Caisse" aria-pressed="false"></button>
+              <button type="button" class="carousel-dot h-1.5 w-4 rounded-full bg-border transition-all" data-carousel-indicator="clients" aria-label="Afficher : Clients" aria-pressed="false"></button>
+            </div>
+            <button type="button" class="carousel-toggle flex h-8 items-center justify-center rounded-md px-2 text-[11px] font-semibold text-muted-foreground hover:bg-muted" data-carousel-toggle aria-pressed="false" aria-label="Mettre en pause le défilement">Pause</button>
+            <button type="button" class="carousel-arrow flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" data-carousel-next aria-label="Capture suivante"><i aria-hidden="true" class="ti ti-chevron-right"></i></button>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+</header>
 
-    <div class="hero-visual reveal-right delay-1">
-      <div style="position:relative">
-        <div class="hero-badge-float badge-left">
-          <div class="badge-icon" style="background:#dcfce7"><i class="ti ti-check" style="color:#16a34a;font-size:18px"></i></div>
-          <div>
-            <div style="font-size:14px;font-weight:800;color:#16a34a">47 commandes</div>
-            <div style="font-size:11px;color:#6b7280">ce mois</div>
-          </div>
-        </div>
-        <div class="hero-badge-float badge-right">
-          <div class="badge-icon" style="background:#ede9fe"><i class="ti ti-brand-whatsapp" style="color:#6c47ff;font-size:18px"></i></div>
-          <div>
-            <div style="font-size:14px;font-weight:800;color:#6c47ff">WhatsApp</div>
-            <div style="font-size:11px;color:#6b7280">envoyé auto</div>
-          </div>
-        </div>
+<main>
 
-        <div class="hero-mockup">
-          <div class="mockup-top">
-            <div class="mockup-dots">
-              <div class="mockup-dot" style="background:rgba(255,255,255,0.3)"></div>
-              <div class="mockup-dot" style="background:rgba(255,255,255,0.3)"></div>
-              <div class="mockup-dot" style="background:rgba(255,255,255,0.3)"></div>
-            </div>
-            <p>PressingManager — Tableau de bord</p>
-          </div>
-          <div class="mockup-body">
-            <div class="mock-stats">
-              <div class="mock-stat"><div class="mock-num">47</div><div class="mock-lbl">Commandes</div></div>
-              <div class="mock-stat"><div class="mock-num" style="color:#6c47ff">285k</div><div class="mock-lbl">XOF CA</div></div>
-              <div class="mock-stat"><div class="mock-num" style="color:#16a34a">123</div><div class="mock-lbl">Clients</div></div>
-            </div>
-            <div class="mock-orders">
-              <div class="mock-order-title">Commandes récentes</div>
-              <div class="mock-order">
-                <div><div class="mock-order-name">Konan Adjoua</div><div class="mock-order-sub">3 articles — Wave</div></div>
-                <div class="mock-order-status status-green">Prêt</div>
-              </div>
-              <div class="mock-order">
-                <div><div class="mock-order-name">Bamba Souleymane</div><div class="mock-order-sub">5 articles — Orange</div></div>
-                <div class="mock-order-status status-blue">Lavage</div>
-              </div>
-              <div class="mock-order">
-                <div><div class="mock-order-name">Yao Marie-Claire</div><div class="mock-order-sub">2 articles — Espèces</div></div>
-                <div class="mock-order-status status-orange">Repassage</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<!-- PROOF STRIP -->
+<section class="border-b border-border bg-card px-6 py-10 sm:px-12">
+  <div class="reveal mx-auto grid max-w-5xl gap-8 text-center sm:grid-cols-4">
+    <div><strong class="block text-[15px] font-bold text-foreground">Un suivi continu</strong><span class="mt-1 block text-sm text-muted-foreground">de la réception à la livraison</span></div>
+    <div><strong class="block text-[15px] font-bold text-foreground">Un seul espace</strong><span class="mt-1 block text-sm text-muted-foreground">commandes, clients, caisse et comptabilité</span></div>
+    <div><strong class="block text-[15px] font-bold text-foreground">Des accès maîtrisés</strong><span class="mt-1 block text-sm text-muted-foreground">chaque employé selon son rôle</span></div>
+    <div><strong class="block text-[15px] font-bold text-foreground">À votre rythme</strong><span class="mt-1 block text-sm text-muted-foreground">demandez une présentation ou explorez la démo</span></div>
+  </div>
+</section>
+
+<!-- CONVERSION STRIP -->
+<section class="flex flex-col items-center justify-between gap-4 border-b border-border bg-accent/40 px-6 py-6 text-center sm:flex-row sm:text-left sm:px-12">
+  <div class="reveal">
+    <span class="block font-mono text-[11px] uppercase tracking-[0.15em] text-primary">Voyez comment cela fonctionne</span>
+    <strong class="mt-1 block text-[15px] font-bold text-foreground">Parcourez un vrai aperçu du logiciel avant de vous décider.</strong>
+  </div>
+  <a href="#apercu" class="reveal inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-bold text-primary hover:text-primary-hover">Voir les écrans <i aria-hidden="true" class="ti ti-arrow-down"></i></a>
+</section>
+
+<!-- TRUST / REASONS -->
+<section class="border-b border-border bg-background px-6 py-20 sm:px-16 lg:px-28" id="pourquoi">
+  <div class="mx-auto max-w-5xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Un pilotage plus clair</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">Transformez les informations dispersées en décisions concrètes.</h2>
+      <p class="mt-3 text-muted-foreground">PressingManager rapproche l'activité atelier et la caisse pour vous aider à suivre les priorités, les règlements et les dépenses.</p>
+    </div>
+    <div class="reveal mt-10 grid gap-6 sm:grid-cols-3">
+      <article class="rounded-2xl border border-border bg-card p-7"><i aria-hidden="true" class="ti ti-clock text-2xl text-primary"></i><h3 class="mt-4 text-base font-bold tracking-tight">Moins de temps perdu</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Retrouvez un client, une commande ou un ticket sans multiplier les recherches.</p></article>
+      <article class="rounded-2xl border border-border bg-card p-7"><i aria-hidden="true" class="ti ti-shield text-2xl text-primary"></i><h3 class="mt-4 text-base font-bold tracking-tight">Livraisons mieux contrôlées</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Suivez le scan QR et le statut de chaque commande avant la remise au client.</p></article>
+      <article class="rounded-2xl border border-border bg-card p-7"><i aria-hidden="true" class="ti ti-trending-up text-2xl text-primary"></i><h3 class="mt-4 text-base font-bold tracking-tight">Rentabilité plus lisible</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Rapprochez encaissements Wave, Orange, MTN et espèces pour voir votre marge.</p></article>
     </div>
   </div>
 </section>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="reveal"><div class="stat-num">100%</div><div class="stat-lbl">En ligne — accessible partout</div></div>
-    <div class="reveal delay-1"><div class="stat-num">0</div><div class="stat-lbl">Installation requise</div></div>
-    <div class="reveal delay-2"><div class="stat-num">24/7</div><div class="stat-lbl">Données sauvegardées</div></div>
-    <div class="reveal delay-3"><div class="stat-num">∞</div><div class="stat-lbl">Commandes enregistrées</div></div>
+<!-- GALERIE / APERÇU -->
+<section class="border-b border-border bg-card px-6 py-20 sm:px-16 lg:px-28" id="apercu">
+  <div class="mx-auto max-w-4xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Le produit, en images</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">Explorez les écrans qui font avancer le pressing.</h2>
+      <p class="mt-3 text-muted-foreground">Du premier dépôt au suivi des chiffres, découvrez quatre écrans concrets de PressingManager.</p>
+    </div>
+
+    <div class="reveal mt-9" data-gallery>
+      <div class="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Parcours à découvrir">
+        <button type="button" id="gallery-tab-reception" role="tab" aria-selected="true" aria-controls="gallery-panel-reception" data-gallery-tab="reception" class="gallery-tab rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition">Réception</button>
+        <button type="button" id="gallery-tab-atelier" role="tab" aria-selected="false" aria-controls="gallery-panel-atelier" data-gallery-tab="atelier" class="gallery-tab rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition">Atelier</button>
+        <button type="button" id="gallery-tab-caisse" role="tab" aria-selected="false" aria-controls="gallery-panel-caisse" data-gallery-tab="caisse" class="gallery-tab rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition">Caisse</button>
+        <button type="button" id="gallery-tab-clients" role="tab" aria-selected="false" aria-controls="gallery-panel-clients" data-gallery-tab="clients" class="gallery-tab rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition">Clients</button>
+      </div>
+
+      <div class="mt-6 overflow-hidden rounded-2xl border border-border bg-background">
+        <div class="gallery-panel is-active p-8" id="gallery-panel-reception" role="tabpanel" aria-labelledby="gallery-tab-reception" tabindex="0">
+          <div class="grid gap-6 sm:grid-cols-2 sm:items-center">
+            <div><span class="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Réception · ticket QR</span><h3 class="mt-2 text-lg font-bold">Commencez un dossier en reliant le client et le dépôt.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Chaque dépôt génère un ticket avec QR code. Le laveur scanne pour voir les habits, fini les confusions entre clients.</p></div>
+            <div class="rounded-xl border border-border bg-card p-5"><div class="flex items-center justify-between rounded-lg bg-accent px-3 py-3 text-primary"><span class="text-sm font-semibold">Ticket #2451</span><i aria-hidden="true" class="ti ti-qrcode text-2xl"></i></div></div>
+          </div>
+        </div>
+        <div class="gallery-panel p-8" id="gallery-panel-atelier" role="tabpanel" aria-labelledby="gallery-tab-atelier" tabindex="0">
+          <div class="grid gap-6 sm:grid-cols-2 sm:items-center">
+            <div><span class="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Atelier · tableau de bord</span><h3 class="mt-2 text-lg font-bold">Les commandes à traiter sont mises en évidence.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Scan QR à chaque étape : réception, lavage, repassage, prêt. Le statut est mis à jour instantanément.</p></div>
+            <div class="space-y-1.5 rounded-xl border border-border bg-card p-4">
+              <div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm"><span>Konan Adjoua</span><span class="status-green rounded-md px-2 py-0.5 text-[11px] font-bold">Prêt</span></div>
+              <div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm"><span>Bamba Souleymane</span><span class="status-blue rounded-md px-2 py-0.5 text-[11px] font-bold">Lavage</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-panel p-8" id="gallery-panel-caisse" role="tabpanel" aria-labelledby="gallery-tab-caisse" tabindex="0">
+          <div class="grid gap-6 sm:grid-cols-2 sm:items-center">
+            <div><span class="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Caisse · encaissements</span><h3 class="mt-2 text-lg font-bold">Wave, Orange Money, MTN et espèces, tout est tracé.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Rappel automatique pour fermer la caisse et comptabilité en temps réel, bénéfice visible.</p></div>
+            <div class="grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-4">
+              <div class="rounded-lg bg-muted p-3 text-center text-xs font-semibold text-muted-foreground">Wave</div>
+              <div class="rounded-lg bg-muted p-3 text-center text-xs font-semibold text-muted-foreground">Orange</div>
+              <div class="rounded-lg bg-muted p-3 text-center text-xs font-semibold text-muted-foreground">Espèces</div>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-panel p-8" id="gallery-panel-clients" role="tabpanel" aria-labelledby="gallery-tab-clients" tabindex="0">
+          <div class="grid gap-6 sm:grid-cols-2 sm:items-center">
+            <div><span class="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Clients · fidélité</span><h3 class="mt-2 text-lg font-bold">Base de données clients et remises automatiques.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Programme de fidélité pour vos meilleurs clients, et historique complet de leurs commandes.</p></div>
+            <div class="rounded-xl border border-border bg-card p-4"><div class="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm"><span>Coulibaly Fatoumata</span><span class="rounded-md bg-accent px-2 py-0.5 text-[11px] font-bold text-primary">Fidèle</span></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 flex items-start gap-2 text-xs text-muted-foreground"><i aria-hidden="true" class="ti ti-info-circle mt-0.5"></i> Ces écrans utilisent des données de démonstration pour illustrer l'interface.</p>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- WORKFLOW -->
+<section class="border-b border-border bg-background px-6 py-20 sm:px-16 lg:px-28" id="parcours">
+  <div class="mx-auto max-w-5xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Un flux de travail cohérent</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">De la réception du linge à la livraison.</h2>
+    </div>
+    <div class="reveal mt-10 grid gap-5 sm:grid-cols-5">
+      <article class="rounded-xl border border-border bg-card p-5"><b class="font-mono text-xs text-primary">01</b><strong class="mt-2 block text-sm font-bold">Réception</strong><span class="mt-1 block text-xs text-muted-foreground">Ticket QR généré au dépôt.</span></article>
+      <article class="rounded-xl border border-border bg-card p-5"><b class="font-mono text-xs text-primary">02</b><strong class="mt-2 block text-sm font-bold">Lavage</strong><span class="mt-1 block text-xs text-muted-foreground">Scan atelier, statut mis à jour.</span></article>
+      <article class="rounded-xl border border-border bg-card p-5"><b class="font-mono text-xs text-primary">03</b><strong class="mt-2 block text-sm font-bold">Repassage</strong><span class="mt-1 block text-xs text-muted-foreground">Nouvelle étape scannée.</span></article>
+      <article class="rounded-xl border border-border bg-card p-5"><b class="font-mono text-xs text-primary">04</b><strong class="mt-2 block text-sm font-bold">Prêt</strong><span class="mt-1 block text-xs text-muted-foreground">Message WhatsApp automatique.</span></article>
+      <article class="rounded-xl border border-border bg-card p-5"><b class="font-mono text-xs text-primary">05</b><strong class="mt-2 block text-sm font-bold">Livraison</strong><span class="mt-1 block text-xs text-muted-foreground">Encaissement et clôture.</span></article>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="border-b border-border bg-card px-6 py-20 sm:px-16 lg:px-28" id="fonctionnalites">
+  <div class="mx-auto max-w-5xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Modules disponibles</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">Toute l'activité du pressing, dans le même logiciel.</h2>
+    </div>
+    <div class="reveal mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <article><i aria-hidden="true" class="ti ti-qrcode text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">Tickets QR</strong><small class="mt-1 block text-sm text-muted-foreground">Chaque dépôt génère un ticket, le laveur scanne pour voir les habits.</small></article>
+      <article><i aria-hidden="true" class="ti ti-brand-whatsapp text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">WhatsApp Automatique</strong><small class="mt-1 block text-sm text-muted-foreground">Message automatique à la réception et quand c'est prêt.</small></article>
+      <article><i aria-hidden="true" class="ti ti-cash text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">Caisse Intelligente</strong><small class="mt-1 block text-sm text-muted-foreground">Wave, Orange Money, MTN ou espèces, tout est tracé.</small></article>
+      <article><i aria-hidden="true" class="ti ti-users text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">Clients</strong><small class="mt-1 block text-sm text-muted-foreground">Base de données clients, fidélité, remises automatiques.</small></article>
+      <article><i aria-hidden="true" class="ti ti-chart-bar text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">Comptabilité</strong><small class="mt-1 block text-sm text-muted-foreground">Recettes, dépenses, bénéfice net en temps réel.</small></article>
+      <article><i aria-hidden="true" class="ti ti-scan text-2xl text-primary"></i><strong class="mt-3 block text-base font-bold">Atelier</strong><small class="mt-1 block text-sm text-muted-foreground">Scan QR à chaque étape, statut mis à jour instantanément.</small></article>
+    </div>
+    <div class="reveal mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <button onclick="openSignupModal()" class="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary-hover">Explorer les modules dans la base test <i aria-hidden="true" class="ti ti-arrow-right"></i></button>
+      <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20savoir%20quels%20modules%20conviennent%20%C3%A0%20mon%20pressing" class="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">Demander quels modules conviennent à mon pressing</a>
+    </div>
+  </div>
+</section>
 
 <!-- AVANT / APRÈS -->
-<section class="compare-section">
-  <div class="section-inner">
-    <div class="section-head-center reveal">
-      <div class="section-label">Avant / Après</div>
-      <div class="section-title">La différence saute aux yeux</div>
-      <div class="section-sub">Passez du carnet papier au logiciel pro. Vos journées deviennent plus simples.</div>
+<section class="border-b border-border bg-background px-6 py-20 sm:px-16 lg:px-28">
+  <div class="mx-auto max-w-5xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Une organisation qui se suit</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">La différence saute aux yeux.</h2>
+      <p class="mt-3 text-muted-foreground">Passez du carnet papier au logiciel pro. Vos journées deviennent plus simples.</p>
     </div>
-    <div class="compare-grid">
-      <div class="compare-card compare-old reveal-left">
-        <div class="compare-header">
-          <div class="compare-icon"><i class="ti ti-mood-sad"></i></div>
-          <div class="compare-title">Sans PressingManager</div>
+    <div class="reveal mt-10 grid gap-6 sm:grid-cols-2">
+      <div class="rounded-2xl border border-[#fecaca] bg-[#fef2f2] p-8">
+        <div class="mb-5 flex items-center gap-3 border-b border-dashed border-[#fecaca] pb-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#fee2e2] text-[#DC2626]"><i aria-hidden="true" class="ti ti-mood-sad text-xl"></i></span>
+          <h3 class="text-lg font-extrabold text-[#DC2626]">Sans PressingManager</h3>
         </div>
-        <ul class="compare-list">
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Carnet papier, tickets perdus, clients confondus</li>
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Appels constants : "C'est prêt ?" "Vous êtes sûr ?"</li>
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Caisse approximative, erreurs de comptage</li>
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Aucune visibilité sur le chiffre d'affaires</li>
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Impossible de suivre qui a déposé quoi</li>
-          <li><i class="ti ti-x" style="color:var(--red)"></i> Pas de fidélisation client</li>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#991b1b]"><i aria-hidden="true" class="ti ti-x mt-0.5 shrink-0"></i> Carnet papier, tickets perdus, clients confondus</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#991b1b]"><i aria-hidden="true" class="ti ti-x mt-0.5 shrink-0"></i> Appels constants : "C'est prêt ?" "Vous êtes sûr ?"</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#991b1b]"><i aria-hidden="true" class="ti ti-x mt-0.5 shrink-0"></i> Caisse approximative, erreurs de comptage</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#991b1b]"><i aria-hidden="true" class="ti ti-x mt-0.5 shrink-0"></i> Aucune visibilité sur le chiffre d'affaires</li>
         </ul>
       </div>
-      <div class="compare-card compare-new reveal-right">
-        <div class="compare-header">
-          <div class="compare-icon"><i class="ti ti-mood-happy"></i></div>
-          <div class="compare-title">Avec PressingManager</div>
+      <div class="rounded-2xl border border-[#bbf7d0] bg-[#f0fdf4] p-8">
+        <div class="mb-5 flex items-center gap-3 border-b border-dashed border-[#bbf7d0] pb-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dcfce7] text-[#16a34a]"><i aria-hidden="true" class="ti ti-mood-happy text-xl"></i></span>
+          <h3 class="text-lg font-extrabold text-[#16a34a]">Avec PressingManager</h3>
         </div>
-        <ul class="compare-list">
-          <li><i class="ti ti-check" style="color:var(--green)"></i> Tickets QR code, chaque vêtement tracé</li>
-          <li><i class="ti ti-check" style="color:var(--green)"></i> WhatsApp automatique à la réception et à la livraison</li>
-          <li><i class="ti ti-check" style="color:var(--green)"></i> Caisse tracée, Wave/Orange/MTN/Espèces séparés</li>
-          <li><i class="ti ti-check" style="color:var(--green)"></i> Comptabilité en temps réel, bénéfice visible</li>
-          <li><i class="ti ti-check" style="color:var(--green)"></i> Scan QR à l'atelier, statut mis à jour instantanément</li>
-          <li><i class="ti ti-check" style="color:var(--green)"></i> Programme de fidélité, clients qui reviennent</li>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#166534]"><i aria-hidden="true" class="ti ti-check mt-0.5 shrink-0"></i> Tickets QR code, chaque vêtement tracé</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#166534]"><i aria-hidden="true" class="ti ti-check mt-0.5 shrink-0"></i> WhatsApp automatique à la réception et à la livraison</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#166534]"><i aria-hidden="true" class="ti ti-check mt-0.5 shrink-0"></i> Caisse tracée, Wave/Orange/MTN/Espèces séparés</li>
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[#166534]"><i aria-hidden="true" class="ti ti-check mt-0.5 shrink-0"></i> Comptabilité en temps réel, bénéfice visible</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SCREENSHOTS -->
-<section class="screenshots-section" id="screenshots">
-  <div class="section-inner">
-    <div class="section-head-center reveal">
-      <div class="section-label">Aperçu</div>
-      <div class="section-title">Un logiciel pensé pour vous</div>
-      <div class="section-sub">Découvrez les 7 écrans principaux. Chacun a été conçu avec des pressings pour être simple et rapide.</div>
-    </div>
-
-    <div class="screenshots-carousel reveal">
-      <div class="screenshots-track">
-
-        <!-- Dashboard -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo">P</div>
-              <div><div class="mk-title">Tableau de bord</div><div class="mk-sub">Vue d'ensemble du jour</div></div>
-            </div>
-            <div class="mk-kpi-row">
-              <div class="mk-kpi"><div class="mk-kpi-num">47</div><div class="mk-kpi-lbl">Cmd</div></div>
-              <div class="mk-kpi"><div class="mk-kpi-num">285k</div><div class="mk-kpi-lbl">XOF</div></div>
-              <div class="mk-kpi mk-kpi-purple"><div class="mk-kpi-num">123</div><div class="mk-kpi-lbl">Clients</div></div>
-            </div>
-            <div class="mk-chart">
-              <div class="mk-chart-bar" style="height:40%"></div>
-              <div class="mk-chart-bar" style="height:60%"></div>
-              <div class="mk-chart-bar" style="height:55%"></div>
-              <div class="mk-chart-bar" style="height:75%"></div>
-              <div class="mk-chart-bar" style="height:90%"></div>
-              <div class="mk-chart-bar" style="height:65%"></div>
-              <div class="mk-chart-bar" style="height:80%"></div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Tableau de bord</h4><p>CA, commandes, alertes en direct</p></div>
-            <div class="screenshot-num">01</div>
-          </div>
-        </div>
-
-        <!-- Commandes -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#16a34a">C</div>
-              <div><div class="mk-title">Commandes</div><div class="mk-sub">Suivi complet</div></div>
-            </div>
-            <div class="mk-list">
-              <div class="mk-list-item"><span class="mk-list-name">#PM-142 · Konan A.</span><span class="mk-badge status-green">Prêt</span></div>
-              <div class="mk-list-item"><span class="mk-list-name">#PM-141 · Bamba S.</span><span class="mk-badge status-blue">Lavage</span></div>
-              <div class="mk-list-item"><span class="mk-list-name">#PM-140 · Yao MC</span><span class="mk-badge status-orange">Repassage</span></div>
-              <div class="mk-list-item"><span class="mk-list-name">#PM-139 · Traoré K.</span><span class="mk-badge status-green">Prêt</span></div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Commandes</h4><p>Tickets QR + statuts temps réel</p></div>
-            <div class="screenshot-num">02</div>
-          </div>
-        </div>
-
-        <!-- Atelier -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#f97316">A</div>
-              <div><div class="mk-title">Atelier</div><div class="mk-sub">Scan QR rapide</div></div>
-            </div>
-            <div style="background:#fff;border:2px dashed var(--purple);border-radius:12px;padding:24px;text-align:center">
-              <i class="ti ti-qrcode" style="font-size:48px;color:var(--purple)"></i>
-              <div style="font-size:12px;font-weight:700;margin-top:8px">Scanner un ticket</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:4px">Caméra ou douchette</div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Atelier</h4><p>Scan QR à chaque étape</p></div>
-            <div class="screenshot-num">03</div>
-          </div>
-        </div>
-
-        <!-- Caisse -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#2563eb">C</div>
-              <div><div class="mk-title">Caisse</div><div class="mk-sub">Session active</div></div>
-            </div>
-            <div class="mk-kpi-row">
-              <div class="mk-kpi"><div class="mk-kpi-num">9.5k</div><div class="mk-kpi-lbl">Fond</div></div>
-              <div class="mk-kpi"><div class="mk-kpi-num">142k</div><div class="mk-kpi-lbl">Entrées</div></div>
-              <div class="mk-kpi mk-kpi-purple"><div class="mk-kpi-num">151k</div><div class="mk-kpi-lbl">Solde</div></div>
-            </div>
-            <div class="mk-list">
-              <div class="mk-list-item"><span class="mk-list-name">11:42 · Wave</span><span class="mk-badge status-green">+18k</span></div>
-              <div class="mk-list-item"><span class="mk-list-name">10:30 · Sortie</span><span class="mk-badge" style="background:#fee2e2;color:#dc2626">-8.5k</span></div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Caisse</h4><p>Sessions et encaissements</p></div>
-            <div class="screenshot-num">04</div>
-          </div>
-        </div>
-
-        <!-- Clients -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#8b5cf6">K</div>
-              <div><div class="mk-title">Clients</div><div class="mk-sub">Répertoire</div></div>
-            </div>
-            <div class="mk-list">
-              <div class="mk-list-item"><span style="width:24px;height:24px;border-radius:50%;background:#6c47ff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">EB</span><span class="mk-list-name">Elvira Blanche</span><span class="mk-badge status-green">Actif</span></div>
-              <div class="mk-list-item"><span style="width:24px;height:24px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">AK</span><span class="mk-list-name">Adjoua Konan</span><span class="mk-badge status-green">Actif</span></div>
-              <div class="mk-list-item"><span style="width:24px;height:24px;border-radius:50%;background:#f97316;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">DL</span><span class="mk-list-name">Denise Lali</span><span class="mk-badge status-green">Actif</span></div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Clients</h4><p>Base + historique + fidélité</p></div>
-            <div class="screenshot-num">05</div>
-          </div>
-        </div>
-
-        <!-- Fidélité -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#f59e0b">F</div>
-              <div><div class="mk-title">Fidélité</div><div class="mk-sub">Paliers</div></div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div style="background:linear-gradient(135deg,#b45309,#f59e0b);border-radius:10px;padding:12px;color:#fff"><div style="font-size:18px;font-weight:900">18</div><div style="font-size:9px;font-weight:700;text-transform:uppercase">Bronze</div></div>
-              <div style="background:linear-gradient(135deg,#64748b,#94a3b8);border-radius:10px;padding:12px;color:#fff"><div style="font-size:18px;font-weight:900">9</div><div style="font-size:9px;font-weight:700;text-transform:uppercase">Silver</div></div>
-              <div style="background:linear-gradient(135deg,#f59e0b,#fbbf24);border-radius:10px;padding:12px;color:#fff"><div style="font-size:18px;font-weight:900">4</div><div style="font-size:9px;font-weight:700;text-transform:uppercase">Gold</div></div>
-              <div style="background:linear-gradient(135deg,#6c47ff,#8b5cf6);border-radius:10px;padding:12px;color:#fff"><div style="font-size:18px;font-weight:900">2</div><div style="font-size:9px;font-weight:700;text-transform:uppercase">Platinum</div></div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Fidélité</h4><p>4 paliers + coupons</p></div>
-            <div class="screenshot-num">06</div>
-          </div>
-        </div>
-
-        <!-- Paramètres -->
-        <div class="screenshot-card">
-          <div class="screenshot-mockup">
-            <div class="mk-header">
-              <div class="mk-logo" style="background:#0f172a">P</div>
-              <div><div class="mk-title">Paramètres</div><div class="mk-sub">100% personnalisable</div></div>
-            </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px">
-              <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:8px">COULEUR PRINCIPALE</div>
-              <div style="display:flex;gap:6px">
-                <div style="width:24px;height:24px;border-radius:6px;background:#6c47ff;border:2px solid #0f172a"></div>
-                <div style="width:24px;height:24px;border-radius:6px;background:#2563eb"></div>
-                <div style="width:24px;height:24px;border-radius:6px;background:#16a34a"></div>
-                <div style="width:24px;height:24px;border-radius:6px;background:#dc2626"></div>
-                <div style="width:24px;height:24px;border-radius:6px;background:#f59e0b"></div>
-              </div>
-            </div>
-          </div>
-          <div class="screenshot-label">
-            <div><h4>Paramètres</h4><p>Logo, couleurs, règles métier</p></div>
-            <div class="screenshot-num">07</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+<!-- SÉCURITÉ -->
+<section class="border-b border-border bg-card px-6 py-16 sm:px-16 lg:px-28">
+  <div class="reveal mx-auto grid max-w-4xl gap-8 sm:grid-cols-2">
+    <article class="rounded-2xl border border-border bg-background p-7">
+      <i aria-hidden="true" class="ti ti-lock text-2xl text-primary"></i>
+      <span class="mt-3 block font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Sécurité</span>
+      <h3 class="mt-1 text-lg font-bold">Chaque pressing travaille dans son propre espace.</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Vos données clients et commandes sont chiffrées et isolées des autres pressings. Les rôles limitent les accès selon les responsabilités.</p>
+    </article>
+    <article class="rounded-2xl border border-border bg-background p-7">
+      <i aria-hidden="true" class="ti ti-refresh text-2xl text-primary"></i>
+      <span class="mt-3 block font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Essai gratuit 24h</span>
+      <h3 class="mt-1 text-lg font-bold">Testez les fonctionnalités avant de vous engager.</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted-foreground">L'essai de 24 heures vous donne un accès complet pour explorer le logiciel, sans engagement. Si ça vous convient, vous souscrivez pour l'année.</p>
+    </article>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section id="fonctionnalites" class="features-bg">
-  <div class="section-inner">
-    <div class="reveal">
-      <div class="section-label">Fonctionnalités</div>
-      <div class="section-title">Tout ce dont vous avez besoin</div>
-      <div class="section-sub">Un seul logiciel pour gérer toute votre activité pressing, de la réception à la livraison.</div>
+<!-- TARIF -->
+<section class="border-b border-border bg-background px-6 py-20 sm:px-16 lg:px-28" id="tarifs">
+  <div class="mx-auto max-w-2xl">
+    <div class="reveal text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Tarif</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-5xl">Un prix simple, tout inclus.</h2>
+      <p class="mt-4 text-muted-foreground">Pas de frais cachés. Pas de surprise. Tout est inclus.</p>
     </div>
-    <div class="features-grid">
-      <div class="feat-card reveal delay-1">
-        <div class="feat-icon"><i class="ti ti-qrcode"></i></div>
-        <h3>Tickets QR Code</h3>
-        <p>Chaque dépôt génère un ticket avec QR code. Le laveur scanne pour voir les habits. Fini les confusions entre clients !</p>
-      </div>
-      <div class="feat-card reveal delay-2">
-        <div class="feat-icon"><i class="ti ti-brand-whatsapp"></i></div>
-        <h3>WhatsApp Automatique</h3>
-        <p>Message automatique à la réception et quand c'est prêt. Vos clients sont toujours informés, sans effort.</p>
-      </div>
-      <div class="feat-card reveal delay-3">
-        <div class="feat-icon"><i class="ti ti-cash"></i></div>
-        <h3>Caisse Intelligente</h3>
-        <p>Wave, Orange Money, MTN ou espèces. Tout est tracé. Rappel automatique à 18h pour fermer la caisse.</p>
-      </div>
-      <div class="feat-card reveal delay-1">
-        <div class="feat-icon"><i class="ti ti-users"></i></div>
-        <h3>Gestion des Clients</h3>
-        <p>Base de données clients, programme de fidélité, remises automatiques pour vos meilleurs clients.</p>
-      </div>
-      <div class="feat-card reveal delay-2">
-        <div class="feat-icon"><i class="ti ti-calendar"></i></div>
-        <h3>Agenda & Planning</h3>
-        <p>Visualisez les livraisons du jour. Suggestion automatique de la meilleure date selon votre charge.</p>
-      </div>
-      <div class="feat-card reveal delay-3">
-        <div class="feat-icon"><i class="ti ti-user-check"></i></div>
-        <h3>Gestion des Employés</h3>
-        <p>Chaque employé a son propre accès selon son rôle. Sécurité et responsabilité.</p>
-      </div>
-      <div class="feat-card reveal delay-1">
-        <div class="feat-icon"><i class="ti ti-chart-bar"></i></div>
-        <h3>Comptabilité & Rapports</h3>
-        <p>Recettes, dépenses, bénéfice net. Rapports pour suivre la santé financière de votre pressing.</p>
-      </div>
-      <div class="feat-card reveal delay-2">
-        <div class="feat-icon"><i class="ti ti-palette"></i></div>
-        <h3>Votre Marque</h3>
-        <p>Votre logo, vos couleurs, votre nom sur les tickets et factures. Le logiciel s'adapte à votre pressing.</p>
-      </div>
-      <div class="feat-card reveal delay-3">
-        <div class="feat-icon"><i class="ti ti-cloud"></i></div>
-        <h3>100% En Ligne</h3>
-        <p>Aucune installation. Accessible depuis n'importe quel PC ou téléphone. Données sauvegardées en permanence.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testi-section">
-  <div class="section-inner">
-    <div class="section-head-center reveal">
-      <div class="section-label">Témoignages</div>
-      <div class="section-title">Ils ont adopté PressingManager</div>
-      <div class="section-sub">Voici ce que disent les gérants de pressings qui utilisent le logiciel au quotidien.</div>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card reveal delay-1">
-        <div class="testi-quote">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">Avant, je perdais 2 heures par jour sur mon carnet. Maintenant, mon mari et moi gérons tout depuis nos téléphones, même le dimanche. Le WhatsApp automatique a changé nos vies.</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#6c47ff">KA</div>
-          <div>
-            <div class="testi-name">Konan Adjoua</div>
-            <div class="testi-role">Pressing Élégance — Abidjan</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card reveal delay-2">
-        <div class="testi-quote">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">Mes 4 employés ont chacun leur compte. Je vois en temps réel ce qui rentre, ce qui sort, ce qui est prêt. Le contrôle total, sans stress.</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#16a34a">BS</div>
-          <div>
-            <div class="testi-name">Bamba Souleymane</div>
-            <div class="testi-role">Clean & Fresh — Yopougon</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card reveal delay-3">
-        <div class="testi-quote">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">Le ticket QR code a mis fin aux confusions entre clients. Avant, on se trompait régulièrement. Maintenant, chaque vêtement a son étiquette.</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#f97316">YM</div>
-          <div>
-            <div class="testi-name">Yao Marie-Claire</div>
-            <div class="testi-role">Pressing du Plateau — Abidjan</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-section" id="tarif">
-  <div class="pricing-inner">
-    <div class="section-head-center reveal">
-      <div class="section-label">Tarif</div>
-      <div class="section-title">Un prix simple, tout inclus</div>
-      <div class="section-sub">Pas de frais cachés. Pas de surprise. Tout est inclus.</div>
-    </div>
-    <div class="pricing-card reveal">
-      <div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px">Forfait annuel unique</div>
-      <div class="pricing-price">150 000 <span style="font-size:20px;font-weight:500;color:#6b7280">XOF</span></div>
-      <div class="pricing-period">par an — soit 12 500 XOF / mois</div>
-      <div class="pricing-divider"></div>
-      <ul class="price-feats">
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Toutes les fonctionnalités incluses</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Utilisateurs illimités</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Tickets QR code + WhatsApp automatique</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Caisse, Stock, Comptabilité, RH</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Mises à jour automatiques gratuites</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Hébergement et sauvegarde inclus</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Support WhatsApp dédié</li>
-        <li><div class="check"><i class="ti ti-check" style="font-size:13px"></i></div> Personnalisation logo et couleurs</li>
+    <div class="reveal relative mt-10 isolate overflow-hidden rounded-3xl border-[3px] border-primary bg-card p-10 text-center shadow-[0_24px_60px_rgba(108,71,255,0.15)] sm:p-12">
+      <div class="pointer-events-none absolute -inset-10 -z-10" style="background:radial-gradient(ellipse 70% 60% at 50% 0%, rgba(108,71,255,0.18) 0%, transparent 70%)"></div>
+      <p class="text-xs font-extrabold uppercase tracking-[0.15em] text-muted-foreground">Forfait annuel unique</p>
+      <p class="mt-4 text-5xl font-black tracking-tight text-foreground sm:text-6xl">150 000 <span class="text-xl font-semibold text-muted-foreground">XOF</span></p>
+      <p class="mt-2 text-sm text-muted-foreground">par an — soit 12 500 XOF / mois</p>
+      <div class="my-7 h-px bg-border"></div>
+      <ul class="space-y-3 text-left text-sm text-foreground">
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Toutes les fonctionnalités incluses</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Utilisateurs illimités</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Tickets QR code + WhatsApp automatique</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Caisse, Stock, Comptabilité, RH</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Mises à jour automatiques gratuites</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Hébergement et sauvegarde inclus</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Support WhatsApp dédié</li>
+        <li class="flex items-center gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><i aria-hidden="true" class="ti ti-check text-sm"></i></span> Personnalisation logo et couleurs</li>
       </ul>
-      <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20souscrire%20à%20PressingManager" class="btn-full">
-        <i class="ti ti-brand-whatsapp"></i> Souscrire maintenant
+      <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20souscrire%20à%20PressingManager" class="btn-primary mt-8 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30">
+        <i aria-hidden="true" class="ti ti-brand-whatsapp"></i> Souscrire maintenant
       </a>
-      <button onclick="openSignupModal()" class="btn-full" style="background:transparent;border:2px solid #6c47ff;color:#6c47ff;margin-top:10px">
-        Essayer gratuitement 24h
-      </button>
-      <div style="font-size:13px;color:#94a3b8;margin-top:12px;text-align:center">Paiement par mobile money</div>
-      <div class="pay-methods">
-        <div class="pay-method"><img src="wave.png" alt="Wave"><span>Wave</span></div>
-        <div class="pay-method"><img src="orange.jpg" alt="Orange Money"><span>Orange Money</span></div>
-        <div class="pay-method"><img src="mtn.png" alt="MTN"><span>MTN Money</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW -->
-<section class="how-section" id="comment">
-  <div class="how-inner">
-    <div class="reveal">
-      <div class="section-label">Comment ça marche</div>
-      <div class="section-title">Opérationnel en moins d'une heure</div>
-    </div>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <h3>Contactez-nous sur WhatsApp</h3>
-          <p>Démo en direct, réponse à toutes vos questions. Gratuit, sans engagement.</p>
-        </div>
-      </div>
-      <div class="step reveal delay-1">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <h3>Payez 150 000 XOF par mobile money</h3>
-          <p>Wave, Orange Money ou MTN. Reçu envoyé immédiatement.</p>
-        </div>
-      </div>
-      <div class="step reveal delay-2">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <h3>On configure en 30 minutes</h3>
-          <p>Logo, tarifs, employés. Votre logiciel est prêt le jour même.</p>
-        </div>
-      </div>
-      <div class="step reveal delay-3">
-        <div class="step-num">4</div>
-        <div class="step-content">
-          <h3>Vous commencez à gérer</h3>
-          <p>Chaque employé se connecte avec son propre compte. C'est parti !</p>
-        </div>
+      <button onclick="openSignupModal()" class="btn-outline mt-3 flex min-h-12 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-primary px-6 py-4 text-[15px] font-bold text-primary transition hover:bg-accent">Essayer gratuitement 24h</button>
+      <p class="mt-4 text-[13px] text-muted-foreground">Paiement par mobile money</p>
+      <div class="mt-4 flex flex-wrap justify-center gap-2.5">
+        <div class="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5"><img src="wave.png" alt="Wave" class="h-5 w-auto object-contain"><span class="text-xs font-semibold text-muted-foreground">Wave</span></div>
+        <div class="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5"><img src="orange.jpg" alt="Orange Money" class="h-5 w-auto object-contain"><span class="text-xs font-semibold text-muted-foreground">Orange Money</span></div>
+        <div class="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5"><img src="mtn.png" alt="MTN" class="h-5 w-auto object-contain"><span class="text-xs font-semibold text-muted-foreground">MTN Money</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="faq-section" id="faq">
-  <div class="faq-inner">
-    <div class="section-head-center reveal">
-      <div class="section-label">Questions fréquentes</div>
-      <div class="section-title">Vous avez une question ?</div>
-      <div class="section-sub">Voici les réponses aux questions les plus posées. Si vous ne trouvez pas, contactez-nous sur WhatsApp.</div>
+<section class="border-b border-border bg-card px-6 py-20 sm:px-16 lg:px-28" id="faq">
+  <div class="mx-auto max-w-4xl">
+    <div class="reveal mx-auto max-w-xl text-center">
+      <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Questions fréquentes</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-foreground sm:text-4xl">Des réponses avant de vous lancer.</h2>
     </div>
-    <div class="faq-list">
-      <div class="faq-item reveal">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Faut-il installer un logiciel sur mon ordinateur ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Non, absolument pas. PressingManager est 100% en ligne. Vous vous connectez depuis n'importe quel navigateur (Chrome, Firefox, Safari) sur PC, tablette ou téléphone. Aucune installation, aucune mise à jour à faire.</p></div>
-      </div>
-      <div class="faq-item reveal delay-1">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Que se passe-t-il si Internet coupe ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Vos données sont sauvegardées automatiquement en permanence. En cas de coupure Internet, vous retrouvez toutes vos informations dès que la connexion revient. Nous travaillons actuellement sur un mode hors ligne complet.</p></div>
-      </div>
-      <div class="faq-item reveal delay-2">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Comment payer les 150 000 XOF ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Par Wave, Orange Money ou MTN Money. Vous recevez un reçu par WhatsApp immédiatement après le paiement. Pas de carte bancaire nécessaire.</p></div>
-      </div>
-      <div class="faq-item reveal">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Puis-je gérer plusieurs boutiques avec un seul compte ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Oui. Le forfait annuel inclut la gestion multi-agences. Vous pouvez créer plusieurs points de vente (Riviera, Plateau, Cocody...) et voir les statistiques de chacune séparément ou globalement.</p></div>
-      </div>
-      <div class="faq-item reveal delay-1">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Mes données sont-elles sécurisées ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Oui. Vos données sont chiffrées, isolées des autres pressings, et sauvegardées quotidiennement. Seuls vous et vos employés autorisés y avez accès. Nous utilisons la même infrastructure que les grandes entreprises (Supabase, hébergement professionnel).</p></div>
-      </div>
-      <div class="faq-item reveal delay-2">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Puis-je essayer avant d'acheter ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Oui ! Nous offrons une démo gratuite de 24 heures avec accès complet. Vous testez toutes les fonctionnalités sans engagement. Si ça vous plaît, vous payez 150 000 XOF pour l'année entière.</p></div>
-      </div>
-      <div class="faq-item reveal">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Comment former mon équipe ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Le logiciel est conçu pour être intuitif : un laveur comprend le scan QR en 5 minutes. Nous fournissons une assistance WhatsApp gratuite pour vous et votre équipe. Nous pouvons aussi faire une session de formation à distance si nécessaire.</p></div>
-      </div>
-      <div class="faq-item reveal delay-1">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          <span>Que se passe-t-il si j'arrête l'abonnement ?</span>
-          <div class="faq-icon"><i class="ti ti-plus"></i></div>
-        </div>
-        <div class="faq-a"><p>Vous gardez l'accès jusqu'à la fin de votre année payée. Ensuite, vos données restent sauvegardées 90 jours, le temps que vous puissiez décider de renouveler. Nous pouvons aussi vous fournir un export complet de vos données (Excel, PDF) sur demande.</p></div>
-      </div>
+    <div class="reveal mt-9 grid gap-4 sm:grid-cols-2">
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Faut-il installer un logiciel ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Non, absolument pas. PressingManager est 100% en ligne, sur n'importe quel navigateur, PC, tablette ou téléphone. Aucune installation.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Que se passe-t-il si Internet coupe ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Vos données sont sauvegardées en permanence. Vous retrouvez tout dès que la connexion revient. Un mode hors ligne complet est en préparation.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Comment payer les 150 000 XOF ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Par Wave, Orange Money ou MTN Money. Vous recevez un reçu par WhatsApp immédiatement après le paiement.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Puis-je gérer plusieurs boutiques ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Oui. Le forfait annuel inclut la gestion multi-agences, avec des statistiques séparées ou globales.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Mes données sont-elles sécurisées ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Oui. Elles sont chiffrées, isolées des autres pressings et sauvegardées quotidiennement sur une infrastructure professionnelle (Supabase).</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Puis-je essayer avant d'acheter ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Oui ! Une démo gratuite de 24 heures avec accès complet, sans engagement. Ensuite, 150 000 XOF pour l'année.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Comment former mon équipe ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Un laveur comprend le scan QR en 5 minutes. Assistance WhatsApp gratuite, et formation à distance si besoin.</p>
+      </details>
+      <details class="group rounded-xl border border-border bg-background p-5 transition hover:border-primary open:border-primary open:shadow-sm">
+        <summary class="flex items-center justify-between gap-3 text-[15px] font-bold text-foreground">Et si j'arrête l'abonnement ?<span class="faq-plus text-xl font-normal text-primary">+</span></summary>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Accès conservé jusqu'à la fin de l'année payée, puis données sauvegardées 90 jours. Export complet disponible sur demande.</p>
+      </details>
     </div>
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="cta-section">
-  <div class="cta-inner">
-    <h2 class="reveal">Prêt à moderniser votre pressing ?</h2>
-    <p class="reveal delay-1">Rejoignez les 24 pressings qui ont déjà fait le pas. Démo gratuite, sans engagement.</p>
-    <div class="cta-btns reveal delay-2">
-      <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20de%20PressingManager" class="btn-whatsapp">
-        <i class="ti ti-brand-whatsapp"></i> WhatsApp — +225 07 79 61 38 65
-      </a>
-      <a href="#tarif" class="btn-white">
-        Voir le tarif
-      </a>
-    </div>
+<!-- CTA FINALE -->
+<section class="bg-background px-6 py-20 text-center sm:px-16 lg:px-28">
+  <span class="reveal font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Prochaine étape</span>
+  <h2 class="reveal mx-auto mt-4 max-w-2xl text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl">Voyez PressingManager sur un parcours concret.</h2>
+  <p class="reveal delay-1 mx-auto mt-4 max-w-xl text-muted-foreground">Explorez la base test, demandez une présentation adaptée à votre pressing ou souscrivez directement.</p>
+  <div class="reveal delay-2 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <button onclick="openSignupModal()" class="btn-primary inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30"><i aria-hidden="true" class="ti ti-player-play"></i> Explorer la base test</button>
+    <a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20une%20pr%C3%A9sentation%20de%20PressingManager" class="btn-outline inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-primary px-7 py-3 text-[15px] font-bold text-primary transition hover:bg-accent"><i aria-hidden="true" class="ti ti-send"></i> Demander une présentation</a>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <h4>PressingManager</h4>
-      <p>Le logiciel de gestion pour pressings, conçu en Côte d'Ivoire pour les pressings d'Afrique de l'Ouest.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Produit</h5>
-      <ul>
-        <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-        <li><a href="#tarif">Tarif</a></li>
-        <li><a href="#faq">FAQ</a>
-      <a href="a-propos.html">A propos</a></li>
-        <li><a href="https://wa.me/2250779613865">Démo</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Entreprise</h5>
-      <ul>
-        <li><a href="cgu.html">Conditions générales</a></li>
-        <li><a href="confidentialite.html">Confidentialité</a></li>
-        <li><a href="https://wa.me/2250779613865">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <ul>
-        <li><a href="https://wa.me/2250779613865">+225 07 79 61 38 65</a></li>
-        <li><a href="mailto:contact@pressing-manager.com">contact@pressing-manager.com</a></li>
-        <li style="color:rgba(255,255,255,0.5);font-size:13px">Abidjan, Côte d'Ivoire</li>
-      </ul>
-    </div>
+</main>
+
+<!-- FOOTER (lean) -->
+<footer class="border-t border-border bg-[#1E1B4B] px-6 py-10">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+    <a href="#hero" class="flex items-center gap-2 text-[15px] font-extrabold text-white">
+      <span class="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-white">PM</span>
+      PressingManager
+    </a>
+    <p class="text-sm text-white/60">Le logiciel de gestion pour pressings, conçu en Côte d'Ivoire.</p>
+    <nav class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-white/70" aria-label="Liens utiles">
+      <a href="#fonctionnalites" class="hover:text-white">Fonctionnalités</a>
+      <a href="#tarifs" class="hover:text-white">Tarifs</a>
+      <a href="a-propos.html" class="hover:text-white">À propos</a>
+      <a href="cgu.html" class="hover:text-white">CGU</a>
+      <a href="confidentialite.html" class="hover:text-white">Confidentialité</a>
+      <a href="https://app.pressing-manager.com" class="hover:text-white">Connexion</a>
+    </nav>
   </div>
-  <div class="footer-bottom">
-    <div>© 2026 PressingManager. Tous droits réservés.</div>
-    <div class="footer-social">
-      <a href="https://wa.me/2250779613865" title="WhatsApp"><i class="ti ti-brand-whatsapp"></i></a>
-      <a href="mailto:contact@pressing-manager.com" title="Email"><i class="ti ti-mail"></i></a>
-      <a href="https://pressing-manager.com" title="Site"><i class="ti ti-world"></i></a>
-    </div>
+  <div class="mx-auto mt-6 max-w-6xl border-t border-white/10 pt-6 text-center text-xs text-white/50">
+    © 2026 PressingManager · <a href="mailto:contact@pressing-manager.com" class="hover:text-white">contact@pressing-manager.com</a> · <a href="https://wa.me/2250779613865" class="hover:text-white">+225 07 79 61 38 65</a>
   </div>
 </footer>
 
+<!-- MOBILE STICKY CTA -->
+<div class="mobile-cta-bar fixed inset-x-0 bottom-0 z-[80] border-t border-border bg-white px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] md:hidden">
+  <button onclick="openSignupModal()" class="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-[15px] font-bold text-white">Essayer gratuitement <i aria-hidden="true" class="ti ti-arrow-right"></i></button>
+</div>
+
 <!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20des%20informations%20sur%20PressingManager" class="wa-float" title="Nous contacter sur WhatsApp" target="_blank">
-  <i class="ti ti-brand-whatsapp"></i>
+<a href="https://wa.me/2250779613865?text=Bonjour%2C%20je%20veux%20des%20informations%20sur%20PressingManager" class="wa-float fixed bottom-24 right-6 z-[90] flex h-[54px] w-[54px] items-center justify-center rounded-full bg-[#25d366] text-[26px] text-white shadow-[0_8px_24px_rgba(37,211,102,0.4)] transition hover:scale-110 md:bottom-6" aria-label="Nous contacter sur WhatsApp" title="Nous contacter sur WhatsApp" target="_blank" rel="noopener noreferrer">
+  <i aria-hidden="true" class="ti ti-brand-whatsapp"></i>
 </a>
 
 <!-- MODAL SIGNUP -->
-<div id="signup-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;padding:16px">
-  <div style="background:white;border-radius:16px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;padding:28px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin:0">Essayer gratuitement</h3>
-      <button onclick="closeSignupModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#6b7280">✕</button>
+<div id="signup-overlay" role="dialog" aria-modal="true" aria-labelledby="signup-title" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 p-4">
+  <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-7">
+    <div class="mb-2 flex items-center justify-between">
+      <h3 id="signup-title" class="text-xl font-extrabold text-[#1e293b]">Essayer gratuitement</h3>
+      <button onclick="closeSignupModal()" aria-label="Fermer la fenêtre" class="modal-close">✕</button>
     </div>
-    <p style="font-size:13px;color:#6b7280;margin-bottom:20px">24 heures d'accès complet, sans engagement.</p>
-    <div id="signup-error" style="display:none;background:#fef2f2;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px"></div>
-    <div id="signup-success" style="display:none;background:#f0fdf4;color:#16a34a;padding:14px;border-radius:8px;font-size:13px;margin-bottom:14px;text-align:center"></div>
+    <p class="mb-5 text-[13px] text-[#6b7280]">24 heures d'accès complet, sans engagement.</p>
+    <div id="signup-error" role="alert" tabindex="-1" class="mb-3.5 hidden rounded-lg bg-[#fef2f2] px-3.5 py-2.5 text-[13px] text-[#991b1b]"></div>
+    <div id="signup-success" role="status" aria-live="polite" class="mb-3.5 hidden rounded-lg bg-[#f0fdf4] p-3.5 text-center text-[13px] text-[#166534]"></div>
     <form id="signup-form" onsubmit="submitSignup(event)">
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">Nom du pressing *</label>
-        <input required id="su-pressing" type="text" placeholder="Ex: Pressing Élégance" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px">
+      <div class="mb-3">
+        <label for="su-pressing" class="mb-1.5 block text-xs font-bold text-[#374151]">Nom du pressing *</label>
+        <input required id="su-pressing" type="text" autocomplete="organization" placeholder="Ex: Pressing Élégance" class="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm">
       </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">Votre nom *</label>
-        <input required id="su-owner" type="text" placeholder="Nom complet" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px">
+      <div class="mb-3">
+        <label for="su-owner" class="mb-1.5 block text-xs font-bold text-[#374151]">Votre nom *</label>
+        <input required id="su-owner" type="text" autocomplete="name" placeholder="Nom complet" class="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm">
       </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">Téléphone / WhatsApp *</label>
-        <input required id="su-phone" type="text" placeholder="+225 07 XX XX XX XX" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px">
+      <div class="mb-3">
+        <label for="su-phone" class="mb-1.5 block text-xs font-bold text-[#374151]">Téléphone / WhatsApp *</label>
+        <input required id="su-phone" type="tel" autocomplete="tel" placeholder="+225 07 XX XX XX XX" class="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm">
       </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">Email *</label>
-        <input required id="su-email" type="email" placeholder="email@exemple.com" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px">
+      <div class="mb-3">
+        <label for="su-email" class="mb-1.5 block text-xs font-bold text-[#374151]">Email *</label>
+        <input required id="su-email" type="email" autocomplete="email" placeholder="email@exemple.com" class="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-sm">
       </div>
-      <div style="margin-bottom:18px">
-        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">Mot de passe *</label>
-        <input required id="su-password" type="password" placeholder="Minimum 6 caractères" minlength="6" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px">
+      <div class="mb-5">
+        <label for="su-password" class="mb-1.5 block text-xs font-bold text-[#374151]">Mot de passe *</label>
+        <div class="pw-field-wrap">
+          <input required id="su-password" type="password" autocomplete="new-password" placeholder="Minimum 6 caractères" minlength="6" class="w-full rounded-lg border border-[#e5e7eb] px-3 py-2.5 pr-10 text-sm">
+          <button type="button" class="pw-toggle-btn" id="pw-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Afficher le mot de passe"><i aria-hidden="true" class="ti ti-eye" id="pw-toggle-icon"></i></button>
+        </div>
       </div>
-      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEsvXERskkr6iQ36" style="margin-bottom:16px"></div>
-      <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;cursor:pointer">
-        <input type="checkbox" id="su-terms" required style="margin-top:3px">
-        <span style="font-size:13px;color:#374151;line-height:1.5">J'accepte les <a href="cgu.html" target="_blank" style="color:#6c47ff">Conditions Générales d'Utilisation</a> et la <a href="confidentialite.html" target="_blank" style="color:#6c47ff">Politique de Confidentialité</a>.</span>
+      <div class="cf-turnstile mb-4" data-sitekey="0x4AAAAAAEsvXERskkr6iQ36"></div>
+      <label class="mb-4 flex cursor-pointer items-start gap-2">
+        <input type="checkbox" id="su-terms" required class="mt-0.5">
+        <span class="text-[13px] leading-relaxed text-[#374151]">J'accepte les <a href="cgu.html" target="_blank" rel="noopener noreferrer" class="text-primary">Conditions Générales d'Utilisation</a> et la <a href="confidentialite.html" target="_blank" rel="noopener noreferrer" class="text-primary">Politique de Confidentialité</a>.</span>
       </label>
-      <button type="submit" id="signup-submit-btn" class="btn-full" style="width:100%">Créer mon compte d'essai</button>
+      <button type="submit" id="signup-submit-btn" class="btn-primary flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-primary py-3.5 text-[15px] font-bold text-white transition hover:bg-primary-hover">Créer mon compte d'essai</button>
     </form>
   </div>
 </div>
@@ -994,33 +582,95 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 // ============================================================
-// ANIMATIONS REVEAL AU SCROLL
+// REVEAL AU SCROLL
 // ============================================================
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) entry.target.classList.add('visible')
   })
 }, { threshold: 0.1 })
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el))
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 
 // ============================================================
-// NAV SCROLLED
+// MENU MOBILE
 // ============================================================
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('nav')
-  if (window.scrollY > 20) nav.classList.add('scrolled')
-  else nav.classList.remove('scrolled')
+const navToggle = document.getElementById('nav-toggle')
+const mobileNav = document.getElementById('mobile-nav')
+navToggle.addEventListener('click', () => {
+  const isOpen = !mobileNav.classList.contains('hidden')
+  mobileNav.classList.toggle('hidden')
+  navToggle.setAttribute('aria-expanded', String(!isOpen))
+  navToggle.setAttribute('aria-label', isOpen ? 'Ouvrir le menu' : 'Fermer le menu')
 })
+mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileNav.classList.add('hidden')
+  navToggle.setAttribute('aria-expanded', 'false')
+  navToggle.setAttribute('aria-label', 'Ouvrir le menu')
+}))
 
 // ============================================================
-// FAQ TOGGLE
+// HERO CAROUSEL (accessible: pause control, stops on focus/hover, respects reduced motion)
 // ============================================================
-function toggleFaq(el) {
-  const item = el.closest('.faq-item')
-  const wasOpen = item.classList.contains('open')
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'))
-  if (!wasOpen) item.classList.add('open')
-}
+;(function () {
+  const root = document.querySelector('[data-carousel]')
+  if (!root) return
+  const slides = Array.from(root.querySelectorAll('[data-slide]'))
+  const order = slides.map(s => s.getAttribute('data-slide'))
+  const dots = Array.from(root.querySelectorAll('[data-carousel-indicator]'))
+  const caption = root.querySelector('[data-carousel-caption]')
+  const labels = { reception: 'Réception', atelier: 'Atelier', caisse: 'Caisse', clients: 'Clients' }
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  let index = 0
+  let paused = prefersReducedMotion
+  let timer = null
+
+  function render() {
+    const name = order[index]
+    slides.forEach(s => s.classList.toggle('is-active', s.getAttribute('data-slide') === name))
+    dots.forEach(d => d.setAttribute('aria-pressed', String(d.getAttribute('data-carousel-indicator') === name)))
+    if (caption) caption.textContent = labels[name] || name
+  }
+  function goTo(i) { index = (i + order.length) % order.length; render() }
+  function next() { goTo(index + 1) }
+  function prev() { goTo(index - 1) }
+  function start() { if (timer || paused) return; timer = setInterval(next, 4500) }
+  function stop() { clearInterval(timer); timer = null }
+
+  root.querySelector('[data-carousel-next]')?.addEventListener('click', () => { next(); })
+  root.querySelector('[data-carousel-prev]')?.addEventListener('click', () => { prev(); })
+  dots.forEach(d => d.addEventListener('click', () => goTo(order.indexOf(d.getAttribute('data-carousel-indicator')))))
+
+  const toggleBtn = root.querySelector('[data-carousel-toggle]')
+  toggleBtn?.addEventListener('click', () => {
+    paused = !paused
+    toggleBtn.setAttribute('aria-pressed', String(paused))
+    toggleBtn.setAttribute('aria-label', paused ? 'Reprendre le défilement' : 'Mettre en pause le défilement')
+    toggleBtn.textContent = paused ? 'Lecture' : 'Pause'
+    if (paused) stop(); else start()
+  })
+
+  root.addEventListener('mouseenter', stop)
+  root.addEventListener('mouseleave', () => { if (!paused) start() })
+  root.addEventListener('focusin', stop)
+  root.addEventListener('focusout', () => { if (!paused) start() })
+
+  render()
+  if (!prefersReducedMotion) start()
+})()
+
+// ============================================================
+// GALERIE (onglets)
+// ============================================================
+;(function () {
+  const root = document.querySelector('[data-gallery]')
+  if (!root) return
+  const tabs = Array.from(root.querySelectorAll('[data-gallery-tab]'))
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    const name = tab.getAttribute('data-gallery-tab')
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)))
+    root.querySelectorAll('.gallery-panel').forEach(p => p.classList.toggle('is-active', p.id === `gallery-panel-${name}`))
+  }))
+})()
 
 // ============================================================
 // SIGNUP MODAL
@@ -1028,21 +678,32 @@ function toggleFaq(el) {
 const SIGNUP_PROXY = 'https://pm-proxy.project-creation-christopher.workers.dev'
 const SIGNUP_KEY = 'pmPublicSignup2026Xk9mQ4rT'
 
-function openSignupModal() { document.getElementById('signup-overlay').style.display = 'flex' }
-function closeSignupModal() { document.getElementById('signup-overlay').style.display = 'none' }
+function openSignupModal() { document.getElementById('signup-overlay').classList.remove('hidden'); document.getElementById('signup-overlay').classList.add('flex') }
+function closeSignupModal() { document.getElementById('signup-overlay').classList.add('hidden'); document.getElementById('signup-overlay').classList.remove('flex') }
+
+function togglePasswordVisibility() {
+  const input = document.getElementById('su-password')
+  const icon = document.getElementById('pw-toggle-icon')
+  const btn = document.getElementById('pw-toggle-btn')
+  const willShow = input.type === 'password'
+  input.type = willShow ? 'text' : 'password'
+  icon.className = willShow ? 'ti ti-eye-off' : 'ti ti-eye'
+  btn.setAttribute('aria-label', willShow ? 'Masquer le mot de passe' : 'Afficher le mot de passe')
+}
 
 async function submitSignup(e) {
   e.preventDefault()
   const btn = document.getElementById('signup-submit-btn')
   const errorEl = document.getElementById('signup-error')
   const successEl = document.getElementById('signup-success')
-  errorEl.style.display = 'none'
-  successEl.style.display = 'none'
+  errorEl.classList.add('hidden')
+  successEl.classList.add('hidden')
 
   const turnstileToken = typeof turnstile !== 'undefined' ? turnstile.getResponse() : null
   if (!turnstileToken) {
     errorEl.textContent = 'Merci de valider la vérification anti-robot avant de continuer.'
-    errorEl.style.display = 'block'
+    errorEl.classList.remove('hidden')
+    errorEl.focus()
     return
   }
 
@@ -1067,10 +728,11 @@ async function submitSignup(e) {
 
     document.getElementById('signup-form').style.display = 'none'
     successEl.innerHTML = ' Presque terminé !<br>Vérifiez votre boîte email (et vos spams) pour confirmer votre adresse — un lien de confirmation vient de vous être envoyé. Ensuite, connectez-vous sur <strong>app.pressing-manager.com</strong> avec l\'email et le mot de passe que vous venez de choisir.'
-    successEl.style.display = 'block'
+    successEl.classList.remove('hidden')
   } catch (err) {
     errorEl.textContent = err.message || 'Une erreur est survenue, réessayez.'
-    errorEl.style.display = 'block'
+    errorEl.classList.remove('hidden')
+    errorEl.focus()
     btn.disabled = false
     btn.textContent = 'Créer mon compte d\'essai'
   }
@@ -1079,6 +741,3 @@ async function submitSignup(e) {
 
 </body>
 </html>
-
-
-
